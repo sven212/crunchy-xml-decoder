@@ -20,7 +20,7 @@ def getuserstatus(session=''):
     #open('tempfile','w').write(site.encode('UTF-8'))
     if re.search(re.escape('      ga(\'set\', \'dimension5\', \'registered\');'), site):
         status = 'Free Member'
-    elif re.search(re.escape('      ga(\'set\', \'dimension6\', \'premium\');'), site):
+    elif re.search(re.escape('      ga(\'set\', \'dimension5\', \'premium\');'), site):
         if re.search(re.escape('      ga(\'set\', \'dimension6\', \'premiumplus\');'), site):
             status = 'Premium+ Member'
         else:
@@ -64,7 +64,7 @@ def login(username, password):
         print 'Login as '+userstatus[0]+' successfully.'
         pickle.dump(requests.utils.dict_from_cookiejar(session.cookies), open('cookies', 'w'))
         with open('cookies', 'w') as f:
-            pickle.dump(requests.utils.dict_from_cookiejar(session.cookies), f)	
+            pickle.dump(requests.utils.dict_from_cookiejar(session.cookies), f)
 
 if __name__ == '__main__':
     try:
