@@ -120,7 +120,7 @@ Booting up...
     #				sub_id = False
     if not os.path.exists(os.path.join("export", series)):
         os.makedirs(os.path.join("export", series))
-    
+
     if not hardcoded:
         for i in sub_id2:
             #xmlsub = altfuncs.getxml('RpcApiSubtitle_GetXml', sub_id)

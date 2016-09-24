@@ -68,7 +68,7 @@ onlymainsub='''+str(onlymainsub)+'''
 
 if not os.path.exists(".\\settings.ini"):
     defaultsettings(iquality, ilang1, ilang2, iforcesub, iforceusa, ilocalizecookies, ionlymainsub)
-	
+
 if not os.path.exists(".\\cookies"):
     if raw_input(u'Do you have an account [Y/N]?').lower() == 'y':
         username = raw_input(u'Username: ')
@@ -278,7 +278,7 @@ def makechoise():
     seleccion = 0
     print '''Options:
 0.- Exit
-1.- Download Anime 
+1.- Download Anime
 2.- Download Subtitle only
 3.- Login
 4.- Login As Guest

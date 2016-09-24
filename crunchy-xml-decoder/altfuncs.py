@@ -39,7 +39,7 @@ def config():
 
 
 #def playerrev(url):
-#    global player_revision 
+#    global player_revision
 #
 #    revision_regex = r"swfobject.embedSWF\(\"(?:.+)'(?P<revision>[\d.]+)'(?:.+)\)"
 #    try:

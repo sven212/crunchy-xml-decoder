@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Download utility as an easy way to get file from the net
- 
+
   python -m wget <URL>
   python wget.py <URL>
 
@@ -73,7 +73,7 @@ def filename_fix_existing(filename):
     """Expands name portion of filename with numeric ' (x)' suffix to
     return filename that doesn't exist already.
     """
-    dirname = '.' 
+    dirname = '.'
     name, ext = filename.rsplit('.', 1)
     names = [x for x in os.listdir(dirname) if x.startswith(name)]
     names = [x.rsplit('.', 1)[0] for x in names]
@@ -203,7 +203,7 @@ def bar_adaptive(current, total, width=80):
     #   [x] choose top priority element min_width < avail_width
     #   [x] lessen avail_width by value if min_width
     #   [x] exclude element from priority list and repeat
-    
+
     #  10% [.. ]  10/100
     # pppp bbbbb sssssss
 
@@ -264,7 +264,7 @@ def callback_progress(blocks, block_size, total_size, bar_function):
     :param bar_function: another callback function to visualize progress
     """
     global __current_size
- 
+
     width = min(100, get_console_width())
 
     if sys.version_info[:3] == (3, 3, 0):  # regression workaround
