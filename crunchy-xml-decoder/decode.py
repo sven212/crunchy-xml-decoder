@@ -45,7 +45,8 @@ Booting up...
 
     #h = HTMLParser.HTMLParser()
     title = re.findall('<title>(.+?)</title>', html)[0].replace('Crunchyroll - Watch ', '')
-    if len(os.path.join('export', title+'.ass')) > 255:
+    series = re.findall('<meta property="og:title" content="(.+?)" />', html)[0]
+    if len(os.path.join('export', series, title+'.ass')) > 255:
         title = re.findall('^(.+?) \- ', title)[0]
 
     ### Taken from http://stackoverflow.com/questions/6116978/python-replace-multiple-strings ###
@@ -54,6 +55,7 @@ Booting up...
     rep = dict((re.escape(k), v) for k, v in rep.iteritems())
     pattern = re.compile("|".join(rep.keys()))
     title = unidecode(pattern.sub(lambda m: rep[re.escape(m.group(0))], title))
+    series = unidecode(pattern.sub(lambda m: rep[re.escape(m.group(0))], series))
 
     ### End stolen code ###
 
@@ -116,6 +118,9 @@ Booting up...
     #				print "The video's subtitles cannot be found, or are region-locked."
     #				hardcoded = True
     #				sub_id = False
+    if not os.path.exists(os.path.join("export", series)):
+        os.makedirs(os.path.join("export", series))
+    
     if not hardcoded:
         for i in sub_id2:
             #xmlsub = altfuncs.getxml('RpcApiSubtitle_GetXml', sub_id)
@@ -124,7 +129,7 @@ Booting up...
             if formattedsubs is None:
                 continue
             #subfile = open(eptitle + '.ass', 'wb')
-            subfile = open(os.path.join('export', title+'['+sub_id3.pop(0)+']'+sub_id4.pop(0)+'.ass'), 'wb')
+            subfile = open(os.path.join('export', series, title+'['+sub_id3.pop(0)+']'+sub_id4.pop(0)+'.ass'), 'wb')
             subfile.write(formattedsubs.encode('utf-8-sig'))
             subfile.close()
         #shutil.move(title + '.ass', os.path.join(os.getcwd(), 'export', ''))

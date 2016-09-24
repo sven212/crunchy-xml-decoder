@@ -33,7 +33,7 @@ def video():
            '-W', 'http://static.ak.crunchyroll.com/versioned_assets/ChromelessPlayerApp.17821a0e.swf',
            '-p', page_url2,
            '-y', filen,
-           '-o', os.path.join('export', '{}.flv'.format(title))]
+           '-o', os.path.join('export', series, '{}.flv'.format(title))]
     if os.name != 'nt':
         cmd.insert(0, 'wine')
     error = subprocess.call(cmd)
@@ -159,14 +159,14 @@ def subtitles(eptitle):
 			if formattedsubs is None:
 			    continue
 			#subfile = open(eptitle + '.ass', 'wb')
-			subfile = open(os.path.join('export', title+'['+sub_id3.pop(0)+']'+sub_id4.pop(0)+'.ass'), 'wb')
+			subfile = open(os.path.join('export', series, title+'['+sub_id3.pop(0)+']'+sub_id4.pop(0)+'.ass'), 'wb')
 			subfile.write(formattedsubs.encode('utf-8-sig'))
-			subfile.close()		
+			subfile.close()
 			#shutil.move(eptitle + '.ass', os.path.join(os.getcwd(), 'export', ''))
 # ----------
 
 def ultimate(page_url, seasonnum, epnum):
-    global url1, url2, filen, title, media_id, lang1, lang2, hardcoded, forceusa, page_url2
+    global url1, url2, filen, title, series, media_id, lang1, lang2, hardcoded, forceusa, page_url2
     #global player_revision
 
     print '''
@@ -185,7 +185,7 @@ Booting up...
 '''
     if page_url == '':
         page_url = raw_input('Please enter Crunchyroll video URL:\n')
-	
+
     try:
         int(page_url)
         page_url = 'http://www.crunchyroll.com/media-' + page_url
@@ -214,18 +214,20 @@ Booting up...
 
     #h = HTMLParser.HTMLParser()
     title = re.findall('<title>(.+?)</title>', html)[0].replace('Crunchyroll - Watch ', '')
-    if len(os.path.join('export', title+'.flv')) > 255:
+    series = re.findall('<meta property="og:title" content="(.+?)" />', html)[0]
+    if len(os.path.join('export', series, title+'.flv')) > 255:
         title = re.findall('^(.+?) \- ', title)[0]
 
     # title = h.unescape(unidecode(title)).replace('/', ' - ').replace(':', '-').
     # replace('?', '.').replace('"', "''").replace('|', '-').replace('&quot;',"''").strip()
-    
+
     ### Taken from http://stackoverflow.com/questions/6116978/python-replace-multiple-strings ###
     rep = {' / ': ' - ', '/': ' - ', ':': '-', '?': '.', '"': "''", '|': '-', '&quot;': "''", 'a*G':'a G', '*': '#', u'\u2026': '...'}
 
     rep = dict((re.escape(k), v) for k, v in rep.iteritems())
     pattern = re.compile("|".join(rep.keys()))
     title = unidecode(pattern.sub(lambda m: rep[re.escape(m.group(0))], title))
+    series = unidecode(pattern.sub(lambda m: rep[re.escape(m.group(0))], series))
 
     ### End stolen code ###
 
@@ -263,6 +265,10 @@ Booting up...
 
 
     # ----------
+
+    if not os.path.exists(os.path.join("export", series)):
+        os.makedirs(os.path.join("export", series))
+
     if 'subs' in sys.argv:
         subtitles(title)
         subs_only = True
@@ -277,17 +283,16 @@ Booting up...
                 url1 = re.findall('.+/ondemand/', host).pop()
                 url2 = re.findall('ondemand/.+', host).pop()
             video()
-            video_input = os.path.join("export", title + '.flv')
+            video_input = os.path.join("export", series, title + '.flv')
         else:
-            video_input = os.path.join("export", title + '.ts')
+            video_input = os.path.join("export", series, title + '.ts')
             video_hls(filen, video_input)
 
         heightp = '360p' if xmlconfig.height.string == '368' else '{0}p'.format(xmlconfig.height.string)  # This is less likely to fail
         subtitles(title)
-
         print 'Starting mkv merge'
         mkvmerge = os.path.join("video-engine", "mkvmerge.exe")
-        filename_output = os.path.join("export", title + '[' + heightp.strip() +'].mkv')
+        filename_output = os.path.join("export", series, title + '[' + heightp.strip() +'].mkv')
         subtitle_input = []
         if os.path.isfile(mkvmerge):
             with_wine = os.name != 'nt'
@@ -308,7 +313,7 @@ Booting up...
                 if onlymainsub and sublangc != sublang:
                     continue
 
-                filename_subtitle = os.path.join("export", title+'['+sublangc+']'+sublangn+'.ass')
+                filename_subtitle = os.path.join("export", series, title+'['+sublangc+']'+sublangn+'.ass')
                 if not os.path.isfile(filename_subtitle):
                     continue
 
